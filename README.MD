@@ -47,6 +47,19 @@ npm run test
 To use the API, you can use the the files inside the app folder that ends with .http.
 You can use the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension for VSCode to run the requests.
 
+Exemple:
+
+```http
+### Create a new user
+POST http://localhost:3000/auth/signup
+content-type: application/json
+
+{
+  "email": "test50@test.com",
+  "password": "12345"
+}
+```
+
 OR
 
 Simple use postmen or insomnia to run the requests.
