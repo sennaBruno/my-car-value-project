@@ -1,5 +1,5 @@
-import { User } from 'src/users/user.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { User } from '../users/user.entity';
 
 @Entity()
 export class Report {
@@ -13,10 +13,10 @@ export class Report {
   price: number;
 
   @Column()
-  model: string;
+  make: string;
 
   @Column()
-  make: string;
+  model: string;
 
   @Column()
   year: number;
@@ -30,6 +30,6 @@ export class Report {
   @Column()
   mileage: number;
 
-  @ManyToOne(() => User, user => user.reports)
+  @ManyToOne(() => User, (user) => user.reports)
   user: User;
 }

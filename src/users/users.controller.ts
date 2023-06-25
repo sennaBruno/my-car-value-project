@@ -1,38 +1,33 @@
 import {
   Body,
   Controller,
-  Delete,
-  Get,
-  NotFoundException,
-  Param,
-  Patch,
   Post,
+  Get,
+  Patch,
+  Delete,
+  Param,
   Query,
+  NotFoundException,
   Session,
   UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { UsersService } from './users.service';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { Serealize } from '../interceptors/serialize.interceptors';
+import { UsersService } from './users.service';
+import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dtos/user.dto';
-import { AuthService } from '../auth/auth.service';
-import { CurrentUser } from './decoretors/current-user.decorator';
+import { AuthService } from './auth.service';
+import { CurrentUser } from './decorators/current-user.decorator';
 import { User } from './user.entity';
 import { AuthGuard } from '../guards/auth.guard';
 
 @Controller('auth')
-@Serealize(UserDto)
+@Serialize(UserDto)
 export class UsersController {
   constructor(
     private usersService: UsersService,
-    private authService: AuthService
+    private authService: AuthService,
   ) {}
-
-  /*  @Get('/whoami')
-  whoAmI(@Session() session: any) {
-    return this.usersService.findOne(session.userId);
-  } */
 
   @Get('/whoami')
   @UseGuards(AuthGuard)
@@ -63,13 +58,13 @@ export class UsersController {
   async findUser(@Param('id') id: string) {
     const user = await this.usersService.findOne(parseInt(id));
     if (!user) {
-      throw new NotFoundException('User not Found!');
+      throw new NotFoundException('user not found');
     }
     return user;
   }
 
   @Get()
-  findAllUser(@Query('email') email: string) {
+  findAllUsers(@Query('email') email: string) {
     return this.usersService.find(email);
   }
 

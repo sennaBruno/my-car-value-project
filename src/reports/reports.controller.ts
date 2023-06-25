@@ -1,20 +1,20 @@
-import { ReportsService } from './reports.service';
 import {
-  Body,
   Controller,
-  Get,
-  Param,
-  Patch,
   Post,
-  Query,
+  Body,
   UseGuards,
+  Patch,
+  Param,
+  Get,
+  Query,
 } from '@nestjs/common';
-import { CreateReportDto } from './dtos/create-reports.dto';
+import { CreateReportDto } from './dtos/create-report.dto';
+import { ReportsService } from './reports.service';
 import { AuthGuard } from '../guards/auth.guard';
-import { CurrentUser } from '../users/decoretors/current-user.decorator';
+import { CurrentUser } from '../users/decorators/current-user.decorator';
 import { User } from '../users/user.entity';
-import { Serealize } from '../interceptors/serialize.interceptors';
 import { ReportDto } from './dtos/report.dto';
+import { Serialize } from '../interceptors/serialize.interceptor';
 import { ApproveReportDto } from './dtos/approve-report.dto';
 import { AdminGuard } from '../guards/admin.guard';
 import { GetEstimateDto } from './dtos/get-estimate.dto';
@@ -30,7 +30,7 @@ export class ReportsController {
 
   @Post()
   @UseGuards(AuthGuard)
-  @Serealize(ReportDto)
+  @Serialize(ReportDto)
   createReport(@Body() body: CreateReportDto, @CurrentUser() user: User) {
     return this.reportsService.create(body, user);
   }

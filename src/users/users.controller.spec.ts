@@ -1,9 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
-import { AuthService } from '../auth/auth.service';
-import { User } from './user.entity';
-import { NotFoundException } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { AuthService } from './auth.service';
+import { User } from './user.entity';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -16,28 +15,15 @@ describe('UsersController', () => {
         return Promise.resolve({
           id,
           email: 'asdf@asdf.com',
-          password: 'password',
+          password: 'asdf',
         } as User);
       },
       find: (email: string) => {
-        return Promise.resolve([
-          {
-            id: 999,
-            email: email,
-            password: 'password',
-          },
-        ] as User[]);
+        return Promise.resolve([{ id: 1, email, password: 'asdf' } as User]);
       },
-      remove: (id: number) => {
-        return Promise.resolve({
-          id,
-          email: 'asdf@asdf.com',
-          password: 'password',
-        } as User);
-      },
-      /* update: () => {}, */
+      // remove: () => {},
+      // update: () => {},
     };
-
     fakeAuthService = {
       // signup: () => {},
       signin: (email: string, password: string) => {
@@ -66,25 +52,31 @@ describe('UsersController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('findUser returns a single user with the given od', async () => {
-    const users = await controller.findAllUser('asdf@asdf.com');
+  it('findAllUsers returns a list of users with the given email', async () => {
+    const users = await controller.findAllUsers('asdf@asdf.com');
     expect(users.length).toEqual(1);
     expect(users[0].email).toEqual('asdf@asdf.com');
   });
 
-  it('findUser throws an error if user with given id is not found', async () => {
-    fakeUsersService.findOne = () => null;
-    await expect(controller.findUser('1')).rejects.toThrow(NotFoundException);
+  it('findUser returns a single user with the given id', async () => {
+    const user = await controller.findUser('1');
+    expect(user).toBeDefined();
   });
 
-  it('signin updates session obj and returns user', async () => {
-    const session = { userId: 999 };
+  it('findUser throws an error if user with given id is not found', async (done) => {
+    fakeUsersService.findOne = () => null;
+    try {
+      await controller.findUser('1');
+    } catch (err) {
+      done();
+    }
+  });
+
+  it('signin updates session object and returns user', async () => {
+    const session = { userId: -10 };
     const user = await controller.signin(
-      {
-        email: 'asdf@asdf.com',
-        password: 'asdf',
-      },
-      session
+      { email: 'asdf@asdf.com', password: 'asdf' },
+      session,
     );
 
     expect(user.id).toEqual(1);

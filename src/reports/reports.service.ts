@@ -1,10 +1,10 @@
-import { GetEstimateDto } from './dtos/get-estimate.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Report } from './report.entity';
 import { Repository } from 'typeorm';
-import { CreateReportDto } from './dtos/create-reports.dto';
+import { Report } from './report.entity';
+import { CreateReportDto } from './dtos/create-report.dto';
 import { User } from '../users/user.entity';
+import { GetEstimateDto } from './dtos/get-estimate.dto';
 
 @Injectable()
 export class ReportsService {
@@ -33,9 +33,9 @@ export class ReportsService {
   }
 
   async changeApproval(id: string, approved: boolean) {
-    const report = await this.repo.findOne({ where: { id: parseInt(id) } });
+    const report = await this.repo.findOne(id);
     if (!report) {
-      throw new NotFoundException('Report not Found');
+      throw new NotFoundException('report not found');
     }
 
     report.approved = approved;
